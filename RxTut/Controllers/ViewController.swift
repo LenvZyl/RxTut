@@ -11,16 +11,22 @@ import RxSwift
 import RxCocoa
 import Alamofire
 import SwiftyJSON
+import Firebase
 
 class ViewController: UIViewController {
 
     @IBOutlet var searchBar: UISearchBar!
     @IBOutlet var tableView: UITableView!
+    
+    var ref: DatabaseReference!
     var movies: [String]  = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
+        
+        ref = Database.database().reference()
         searchBar.rx.text
             .orEmpty
             .distinctUntilChanged()
@@ -61,6 +67,11 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "CELL")!
         cell.textLabel?.text = movies[indexPath.row]
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedMovie = movies[indexPath.row]
+        ref.child("favourites").childByAutoId().setValue(selectedMovie)
     }
 }
 
