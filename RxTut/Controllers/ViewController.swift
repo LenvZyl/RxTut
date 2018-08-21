@@ -19,7 +19,11 @@ class ViewController: UIViewController {
     @IBOutlet var tableView: UITableView!
     
     var ref: DatabaseReference!
-    var movies: [String]  = []
+    var movies = [String]() {
+        didSet {
+            self.tableView.reloadData()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,7 +49,6 @@ class ViewController: UIViewController {
                             }
                         }
                     }
-                    self.tableView.reloadData()
                 })
             }
         )
@@ -71,7 +74,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedMovie = movies[indexPath.row]
-        ref.child("favourites").childByAutoId().setValue(selectedMovie)
+        ref.child("favourites").childByAutoId().setValue(["movie-title" : selectedMovie])
     }
 }
 
